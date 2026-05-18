@@ -148,9 +148,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;display:flex;justify-content
 .claim{position:relative;z-index:2;text-align:center;padding:80px 32px;border-top:0.5px solid var(--b)}
 .ctitle{font-family:'IM Fell English',serif;font-size:clamp(28px,5vw,44px);color:var(--parch);margin-bottom:12px}
 .csub{font-size:18px;font-style:italic;font-weight:300;color:var(--ghost);margin-bottom:40px}
-.gform-wrap{max-width:560px;margin:0 auto 24px;border:0.5px solid var(--b);background:rgba(196,147,58,0.02);padding:4px}
-.gform-wrap iframe{width:100%;border:none;display:block;min-height:420px;background:transparent}
-/* fallback form (shown when no Google Form URL yet) */
+/* custom form */
 .fallback-form{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:480px;margin:0 auto 16px}
 .cinput{flex:1;min-width:220px;background:rgba(240,234,214,0.04);border:0.5px solid var(--bs);color:var(--parch);font-family:'Cormorant Garamond',serif;font-size:17px;padding:14px 20px;outline:none;transition:border-color 0.3s}
 .cinput::placeholder{color:rgba(240,234,214,0.25)}
@@ -504,17 +502,34 @@ footer{position:relative;z-index:2;text-align:center;padding:32px 24px;border-to
        de la Google Forms după ce îl creezi.
        Forma: https://docs.google.com/forms/d/e/XXXX/viewform?embedded=true
        ════════════════════════════════════════════════════ -->
-  <div class="gform-wrap" id="gform-container">
-    <!-- Placeholder afișat până adaugi Google Form-ul real -->
-    <div id="gform-placeholder" style="padding:40px 20px;text-align:center">
-      <p style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:16px">Lista de așteptare</p>
-      <div class="fallback-form">
-        <input class="cinput" type="email" id="cem" placeholder="emailul tău secret" autocomplete="email">
-        <button class="cbtn" onclick="doClaim()">Răspunde</button>
-      </div>
-      <p class="cnote">333 locuri · niciun spam · doar legenda</p>
-      <p class="csuccess" id="csuc">Vâlva a auzit. Vei fi chemat când vine vremea. ✦</p>
+  <!-- Formular propriu — Formspree -->
+  <form id="whisper-form" action="https://formspree.io/f/mnjrqynq" method="POST">
+    <input type="hidden" name="_subject" value="Zarand Mystery — Nou ales pe Whisper List">
+    <input type="hidden" name="_next" value="">
+    <input type="hidden" name="_autoresponse" value="Vâlva Băii te-a auzit. Ești acum pe lista celor aleși. Când porțile minei se vor deschide, vei fi primul chemat. Păstrează taina. — Zarand Mystery">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:500px;margin:0 auto 16px">
+      <input class="cinput" type="email" name="email" id="cem" placeholder="emailul tău secret" autocomplete="email" required style="flex:1;min-width:220px">
+      <select name="tier" style="flex:1;min-width:200px;background:rgba(240,234,214,0.04);border:0.5px solid var(--bs);color:var(--parch);font-family:'Cormorant Garamond',serif;font-size:16px;padding:14px 16px;outline:none;appearance:none;cursor:pointer">
+        <option value="" disabled selected style="background:#0A0805">Ce piatră te cheamă?</option>
+        <option value="Whisper Stone 89€" style="background:#0A0805">Whisper Stone — 89€</option>
+        <option value="Claimed Stone 249€" style="background:#0A0805">Claimed Stone — 249€</option>
+        <option value="Eternal Stone 599€" style="background:#0A0805">Eternal Stone — 599€</option>
+        <option value="Nedecis" style="background:#0A0805">Încă ascult chemarea</option>
+      </select>
     </div>
+    <div style="max-width:500px;margin:0 auto 16px">
+      <textarea name="message" placeholder="De ce te-a ales Vâlva? (opțional)" rows="3" style="width:100%;background:rgba(240,234,214,0.04);border:0.5px solid var(--b);color:var(--parch);font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;padding:14px 20px;outline:none;resize:none;transition:border-color 0.3s" onfocus="this.style.borderColor='rgba(196,147,58,0.75)'" onblur="this.style.borderColor='rgba(196,147,58,0.2)'"></textarea>
+    </div>
+    <button type="submit" class="cbtn" id="submit-btn">Răspunde chemării</button>
+    <p class="cnote" style="margin-top:12px">333 locuri · niciun spam · doar legenda</p>
+  </form>
+  <!-- Mesaj succes -->
+  <div id="whisper-success" style="display:none;padding:40px 20px;text-align:center">
+    <div style="font-size:32px;margin-bottom:20px;opacity:0.6">✦</div>
+    <h3 style="font-family:'IM Fell English',serif;font-size:28px;color:var(--gold-lt);margin-bottom:16px;font-style:italic">Vâlva te-a auzit</h3>
+    <p style="font-size:17px;font-style:italic;color:var(--dim);max-width:440px;margin:0 auto 12px;line-height:1.8">Ești acum pe lista celor aleși. Când porțile minei se vor deschide, vei fi primul chemat.</p>
+    <p style="font-size:14px;color:var(--ghost);font-style:italic">Verifică-ți emailul — Vâlva ți-a trimis deja un mesaj. Păstrează taina.</p>
+    <div style="margin-top:24px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.3em;color:var(--gold-dk);text-transform:uppercase">— Zarand Mystery ✦</div>
   </div>
 
   <div class="socials">
@@ -569,18 +584,7 @@ function doClaim(){
 }
 document.getElementById('cem').addEventListener('keydown', e=>{ if(e.key==='Enter') doClaim(); });
 
-function activateGoogleForm(url) {
-  const container = document.getElementById('gform-container');
-  const placeholder = document.getElementById('gform-placeholder');
-  placeholder.style.display = 'none';
-  const iframe = document.createElement('iframe');
-  iframe.src = url;
-  iframe.style.width = '100%';
-  iframe.style.minHeight = '480px';
-  iframe.style.border = 'none';
-  iframe.style.background = 'transparent';
-  container.appendChild(iframe);
-}
+
 
 // Activate Google Form
 activateGoogleForm('https://docs.google.com/forms/d/e/1FAIpQLSfYYbIw7VZo_x4jfAXDQUS-U6WUPHSO9TnACyvbnXzAwPlazQ/viewform?embedded=true');
