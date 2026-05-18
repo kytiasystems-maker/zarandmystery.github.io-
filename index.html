@@ -210,6 +210,8 @@ footer{position:relative;z-index:2;text-align:center;padding:32px 24px;border-to
   .step:last-child{border-bottom:none}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init({publicKey: "x5mrUDKrU_rtTC8Qv"});</script>
 </head>
 <body>
 <div class="orb o1"></div>
@@ -587,52 +589,9 @@ document.getElementById('cem').addEventListener('keydown', e=>{ if(e.key==='Ente
 activateGoogleForm('https://docs.google.com/forms/d/e/1FAIpQLSfYYbIw7VZo_x4jfAXDQUS-U6WUPHSO9TnACyvbnXzAwPlazQ/viewform?embedded=true');
 
 
-// ── WHISPER FORM — Web3Forms: notificare owner + auto-reply catre utilizator ──
-// Obtine cheia gratuita de pe web3forms.com (30 secunde, fara card)
-// Inlocuieste CHEIA_TA cu access key-ul primit
-const W3F_KEY = 'effe90d0-13fc-4923-b6f1-e1c71bcc82f3';
-
-const AUTO_REPLY_HTML = (tier) => `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
-<body style="background:#0A0805;margin:0;padding:40px 0;font-family:Georgia,serif">
-<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
-<table width="560" cellpadding="0" cellspacing="0" style="background:#0A0805;border:1px solid rgba(196,147,58,0.3);max-width:560px">
-<tr><td><div style="height:3px;background:linear-gradient(90deg,transparent,#C4933A,transparent)"></div></td></tr>
-<tr><td align="center" style="padding:48px 40px 24px">
-  <p style="font-size:10px;letter-spacing:0.45em;color:#C4933A;text-transform:uppercase;margin:0 0 24px">Zarand Mystery · Munții Zarandului</p>
-  <h1 style="font-size:46px;font-weight:400;color:#F0EAD6;margin:0;line-height:1.05">Vâlva</h1>
-  <h1 style="font-size:46px;font-weight:400;color:#E2B96A;font-style:italic;margin:0 0 32px;line-height:1.05">te-a auzit</h1>
-  <div style="height:0.5px;background:linear-gradient(90deg,transparent,rgba(196,147,58,0.4),transparent);margin:0 0 32px"></div>
-</td></tr>
-<tr><td style="padding:0 40px 32px">
-  <p style="font-size:18px;font-style:italic;color:rgba(240,234,214,0.75);line-height:1.85;margin:0 0 24px;border-left:2px solid #7A5518;padding-left:20px">
-    „Minerul sfătuit de Vâlvă unde să sape găsește aur de parcă ar fi fost pus cu mâna acolo. Ea pretinde păstrarea cu strictețe a secretului."
-  </p>
-  <p style="font-size:16px;color:rgba(240,234,214,0.65);line-height:1.85;margin:0 0 16px">
-    Ești acum pe lista celor <strong style="color:#E2B96A;font-weight:400">aleși</strong> din Munții Zarandului.
-    Când porțile galeriei se vor deschide, tu vei fi primul chemat.
-  </p>
-  <p style="font-size:16px;color:rgba(240,234,214,0.65);line-height:1.85;margin:0 0 28px">
-    Piatra ta: <strong style="color:#C4933A;font-weight:400">${tier || 'Nedezvăluită încă'}</strong>
-  </p>
-  <div style="background:rgba(196,147,58,0.04);border:0.5px solid rgba(196,147,58,0.18);padding:20px 24px;margin:0 0 32px">
-    <p style="font-size:14px;font-style:italic;color:rgba(240,234,214,0.45);margin:0;line-height:1.75">
-      Vâlva Băii veghează fiecare galerie din Zarand. Nu vorbi despre chemarea ei cu alții. Taina e prețul aurului.
-    </p>
-  </div>
-</td></tr>
-<tr><td align="center" style="padding:0 40px 40px">
-  <a href="https://zarandmystery.com" style="display:inline-block;font-size:11px;letter-spacing:0.2em;color:#0A0805;background:#C4933A;text-decoration:none;text-transform:uppercase;padding:15px 36px">
-    Intră în galerie
-  </a>
-</td></tr>
-<tr><td align="center" style="padding:0 40px 40px">
-  <div style="height:0.5px;background:linear-gradient(90deg,transparent,rgba(196,147,58,0.3),transparent);margin:0 0 20px"></div>
-  <p style="font-size:12px;font-style:italic;color:rgba(196,147,58,0.4);margin:0 0 4px">Zarand Mystery</p>
-  <p style="font-size:9px;letter-spacing:0.15em;color:rgba(240,234,214,0.18);text-transform:uppercase;margin:0">Explorăm · Păstrăm · Povestim</p>
-</td></tr>
-<tr><td><div style="height:3px;background:linear-gradient(90deg,transparent,#C4933A,transparent)"></div></td></tr>
-</table></td></tr></table>
-</body></html>`;
+// ── WHISPER FORM — Formspree (owner) + EmailJS (auto-reply user) ──
+const EMAILJS_SERVICE  = 'zarand_service';
+const EMAILJS_TEMPLATE = 'template_9x23bdc';
 
 async function doWhisper() {
   const emailEl = document.getElementById('cem');
@@ -643,7 +602,7 @@ async function doWhisper() {
   const wrap    = document.getElementById('whisper-form-wrap');
 
   const email = emailEl.value.trim();
-  const tier  = tierEl.value;
+  const tier  = tierEl.value || 'Nedezvăluită încă';
 
   if(!email || !email.includes('@') || !email.includes('.')) {
     emailEl.style.borderColor = 'rgba(180,60,60,0.8)';
@@ -657,32 +616,32 @@ async function doWhisper() {
   btn.style.opacity = '0.65';
 
   try {
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','Accept':'application/json'},
-      body: JSON.stringify({
-        access_key: W3F_KEY,
-        subject: 'Zarand Mystery — Nou ales pe Whisper List',
-        from_name: 'Zarand Mystery',
-        to: 'contact@zarandmystery.com',
-        email: email,
-        tier: tier || 'Nedecis',
-        message: msgEl ? msgEl.value.trim() || '—' : '—',
-        // Auto-reply to user
-        autoresponse_subject: 'Vâlva Băii te-a auzit · Zarand Mystery',
-        autoresponse_message: AUTO_REPLY_HTML(tier),
-        replyto: email,
-      })
+    // 1. Notificare la owner prin Formspree
+    const fd = new FormData();
+    fd.append('email', email);
+    fd.append('tier', tier);
+    fd.append('message', msgEl ? msgEl.value.trim() || '—' : '—');
+    fd.append('_subject', 'Zarand Mystery — Nou ales pe Whisper List');
+    fd.append('_replyto', email);
+    await fetch('https://formspree.io/f/mnjrqynq', {
+      method: 'POST', body: fd, headers: {'Accept':'application/json'}
     });
-    const data = await res.json();
-    if(data.success) {
-      wrap.style.display = 'none';
-      success.style.display = 'block';
-      if(rem>262){ rem--; rcEl.textContent=rem; }
-    } else {
-      throw new Error('fail');
-    }
+
+    // 2. Auto-reply dark auriu la utilizator prin EmailJS
+    await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      reply_to: email,
+      to_email: email,
+      tier: tier,
+      message: msgEl ? msgEl.value.trim() || '—' : '—',
+    });
+
+    // Succes
+    wrap.style.display = 'none';
+    success.style.display = 'block';
+    if(rem>262){ rem--; rcEl.textContent=rem; }
+
   } catch(e) {
+    console.error('Whisper error:', e);
     btn.textContent = 'Încearcă din nou';
     btn.disabled = false;
     btn.style.opacity = '1';
