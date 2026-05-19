@@ -210,7 +210,7 @@ footer{position:relative;z-index:2;text-align:center;padding:32px 24px;border-to
   .step:last-child{border-bottom:none}
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" onload="emailjs.init({publicKey:'x5mrUDKrU_rtTC8Qv'})"></script>
 </head>
 <body>
 <div class="orb o1"></div>
@@ -585,12 +585,12 @@ document.getElementById('cem').addEventListener('keydown', e=>{ if(e.key==='Ente
 
 
 // Activate Google Form
-activateGoogleForm('https://docs.google.com/forms/d/e/1FAIpQLSfYYbIw7VZo_x4jfAXDQUS-U6WUPHSO9TnACyvbnXzAwPlazQ/viewform?embedded=true');
+// activateGoogleForm('https://docs.google.com/forms/d/e/1FAIpQLSfYYbIw7VZo_x4jfAXDQUS-U6WUPHSO9TnACyvbnXzAwPlazQ/viewform?embedded=true');
 
 
-// ── WHISPER FORM — Formspree (owner) + EmailJS (auto-reply user) ──
-const EMAILJS_SERVICE  = 'zarand_service';
-const EMAILJS_TEMPLATE = 'template_9x23bdc';
+// ── WHISPER FORM ──
+var EMAILJS_SERVICE  = 'zarand_service';
+var EMAILJS_TEMPLATE = 'template_9x23bdc';
 
 async function doWhisper() {
   const emailEl = document.getElementById('cem');
@@ -627,7 +627,6 @@ async function doWhisper() {
     });
 
     // 2. Auto-reply dark auriu la utilizator prin EmailJS
-    emailjs.init({publicKey: 'x5mrUDKrU_rtTC8Qv'});
     const ejsResult = await emailjs.send(
       'zarand_service',
       'template_9x23bdc',
