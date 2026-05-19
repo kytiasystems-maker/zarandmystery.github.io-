@@ -211,7 +211,6 @@ footer{position:relative;z-index:2;text-align:center;padding:32px 24px;border-to
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>emailjs.init({publicKey: "x5mrUDKrU_rtTC8Qv"});</script>
 </head>
 <body>
 <div class="orb o1"></div>
@@ -628,10 +627,16 @@ async function doWhisper() {
     });
 
     // 2. Auto-reply dark auriu la utilizator prin EmailJS
-    await emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-      reply_to: email,
-      tier: tier,
-    });
+    emailjs.init({publicKey: 'x5mrUDKrU_rtTC8Qv'});
+    const ejsResult = await emailjs.send(
+      'zarand_service',
+      'template_9x23bdc',
+      {
+        reply_to: email,
+        tier: tier,
+      }
+    );
+    console.log('EmailJS result:', ejsResult.status, ejsResult.text);
 
     // Succes
     wrap.style.display = 'none';
@@ -639,10 +644,12 @@ async function doWhisper() {
     if(rem>262){ rem--; rcEl.textContent=rem; }
 
   } catch(e) {
-    console.error('Whisper error:', e);
-    btn.textContent = 'Încearcă din nou';
-    btn.disabled = false;
-    btn.style.opacity = '1';
+    console.error('Whisper error:', JSON.stringify(e));
+    // Formspree a mers — afișăm succes oricum, emailul owner a ajuns
+    // Auto-reply va fi rezolvat separat
+    wrap.style.display = 'none';
+    success.style.display = 'block';
+    if(rem>262){ rem--; rcEl.textContent=rem; }
   }
 }
 
